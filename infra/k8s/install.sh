@@ -38,9 +38,10 @@ CLUSTER_SPEC=$(mktemp)
 envsubst <$CLUSTER_SPEC_TEMPLATE >$CLUSTER_SPEC
 cat $CLUSTER_SPEC
 
+echo
 echo "The output above is the cluster I will create for you."
 echo -n "Does this look about right to you? [y/n]: "
-read -n 1 response
+read response
 
 if [ "$response" == "y" ]
 then
