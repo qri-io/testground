@@ -54,52 +54,28 @@ aws s3api create-bucket \
 You might want to add them to your `rc` file (`.zshrc`, `.bashrc`, etc.)
 
 ```
-export NAME=my-first-cluster-kops.k8s.local
-export ZONES=eu-central-1a
 export KOPS_STATE_STORE=s3://kops-backend-bucket
-export WORKER_NODES=4
-export CLUSTER_SPEC=~/cluster.yaml
-export PUBKEY=~/.ssh/id_rsa.pub
 export ASSETS_BUCKET_NAME=$(aws s3 cp s3://assets-s3-bucket-credentials/assets_bucket_name -)
 export ASSETS_ACCESS_KEY=$(aws s3 cp s3://assets-s3-bucket-credentials/assets_access_key -)
 export ASSETS_SECRET_KEY=$(aws s3 cp s3://assets-s3-bucket-credentials/assets_secret_key -)
 ```
 
-4. Generate the cluster spec. You could reuse it next time you create a cluster.
-
-```
-kops create cluster \
-  --zones $ZONES \
-  --master-zones $ZONES \
-  --master-size c5.2xlarge \
-  --node-size c5.2xlarge \
-  --node-count $WORKER_NODES \
-  --networking flannel \
-  --name $NAME \
-  --dry-run \
-  -o yaml > $CLUSTER_SPEC
-```
-
-5. Update `kubelet` section in spec with:
-```
-  kubelet:
-    anonymousAuth: false
-    maxPods: 200
-    allowedUnsafeSysctls:
-    - net.core.somaxconn
-```
-
-6. Set up Helm and add the `stable` Helm Charts repository
+4. Set up Helm and add the `stable` Helm Charts repository
 
 ```
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 helm repo update
 ```
 
-## Apply the cluster configuration and create cloud resources and install Testground dependencies
+## Install the kuberntes cluster
 
 ```
-./install.sh $NAME $CLUSTER_SPEC $PUBKEY $WORKER_NODES
+./install.sh <cluster name> <aws zone> <template> <ssh public key> <number of worker nodes>
+```
+
+for example, to create a monitored cluster in eu-central-1a with five kubernetes workers:
+```
+./install.sh test.k8s.local eu-central-1a ./cluster.yaml.example_with_monitoring ~/.ssh/id_rsa.pub 5
 ```
 
 
