@@ -8,10 +8,11 @@ START_TIME=`date +%s`
 echo "Creating cluster for Testground..."
 echo
 
-NAME=$1
-CLUSTER_SPEC_TEMPLATE=$2
-PUBKEY=$3
-WORKER_NODES=$4
+export NAME=$1
+export ZONES=$2
+CLUSTER_SPEC_TEMPLATE=$3
+PUBKEY=$4
+export WORKER_NODES=$5
 
 echo "Name: $NAME"
 echo "Cluster spec: $CLUSTER_SPEC"
